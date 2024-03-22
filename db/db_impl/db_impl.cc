@@ -492,6 +492,15 @@ void DBImpl::WaitForBackgroundWork() {
   }
 }
 
+void DBImpl::WaitForBackgroundWorkLock() {
+  InstrumentedMutexLock l(&mutex_);
+  // Wait for background work to finish
+  while (bg_bottom_compaction_scheduled_ || bg_compaction_scheduled_ ||
+         bg_flush_scheduled_) {
+    bg_cv_.Wait();
+  }
+}
+
 // Will lock the mutex_,  will wait for completion if wait is true
 void DBImpl::CancelAllBackgroundWork(bool wait) {
   ROCKS_LOG_INFO(immutable_db_options_.info_log,

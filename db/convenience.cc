@@ -18,6 +18,11 @@ void CancelAllBackgroundWork(DB* db, bool wait) {
       ->CancelAllBackgroundWork(wait);
 }
 
+void WaitForBackgroundWork(DB* db) {
+  (static_cast_with_check<DBImpl>(db->GetRootDB()))
+      ->WaitForBackgroundWorkLock();
+}
+
 Status DeleteFilesInRange(DB* db, ColumnFamilyHandle* column_family,
                           const Slice* begin, const Slice* end,
                           bool include_end) {

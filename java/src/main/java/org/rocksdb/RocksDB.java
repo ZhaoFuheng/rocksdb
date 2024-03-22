@@ -4043,6 +4043,14 @@ public class RocksDB extends RocksObject {
   }
 
   /**
+   * This function will wait for all currently scheduled/running background processes
+   */
+  
+  public void waitForBackgroundWork() {
+    waitForBackgroundWork(nativeHandle_);
+  }
+
+  /**
    * This function will cancel all currently running background processes.
    *
    * @param wait if true, wait for all background work to be cancelled before
@@ -5030,6 +5038,7 @@ public class RocksDB extends RocksObject {
   private static native String[] compactFiles(final long handle, final long compactionOptionsHandle,
       final long columnFamilyHandle, final String[] inputFileNames, final int outputLevel,
       final int outputPathId, final long compactionJobInfoHandle) throws RocksDBException;
+  private native void waitForBackgroundWork(final long handle);
   private static native void cancelAllBackgroundWork(final long handle, final boolean wait);
   private static native void pauseBackgroundWork(final long handle) throws RocksDBException;
   private static native void continueBackgroundWork(final long handle) throws RocksDBException;
