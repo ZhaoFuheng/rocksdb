@@ -4307,8 +4307,8 @@ class Benchmark {
           FLAGS_optimize_filters_for_memory;
       block_based_options.index_shortening = index_shortening;
 
-      // Disable block cache (won't let me do it in command line options)
-      cache_ = nullptr;
+      // // Disable block cache (won't let me do it in command line options)
+      // cache_ = nullptr;
       if (cache_ == nullptr) {
         block_based_options.no_block_cache = true;
       }
