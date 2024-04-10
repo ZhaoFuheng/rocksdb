@@ -1,4 +1,5 @@
 #!/bin/bash
 
-./db_bench.sh 2> "db_bench_stderr.txt" > "db_bench_stdout.txt"
-
+for i in 0 1 2 3 4; do
+    ./db_bench.sh > "db_bench_results/figure4/c_plot${i}.txt"
+done
