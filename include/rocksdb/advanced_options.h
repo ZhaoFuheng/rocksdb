@@ -601,7 +601,7 @@ struct AdvancedColumnFamilyOptions {
   // Default: 64MB.
   //
   // Dynamically changeable through SetOptions() API
-  uint64_t target_file_size_base = 64 * 1048576;
+  uint64_t target_file_size_base = 2 * 1048576;
 
   // By default target_file_size_multiplier is 1, which means
   // by default files in different levels will have similar size.
@@ -742,7 +742,7 @@ struct AdvancedColumnFamilyOptions {
   // Default: 64GB
   //
   // Dynamically changeable through SetOptions() API
-  uint64_t soft_pending_compaction_bytes_limit = 64 * 1073741824ull;
+  uint64_t soft_pending_compaction_bytes_limit = 256 * 1048576;
 
   // All writes are stopped if estimated bytes needed to be compaction exceed
   // this threshold.
@@ -750,7 +750,7 @@ struct AdvancedColumnFamilyOptions {
   // Default: 256GB
   //
   // Dynamically changeable through SetOptions() API
-  uint64_t hard_pending_compaction_bytes_limit = 256 * 1073741824ull;
+  uint64_t hard_pending_compaction_bytes_limit = 1073741824ul;
 
   // The compaction style. Default: kCompactionStyleLevel
   CompactionStyle compaction_style = kCompactionStyleLevel;
