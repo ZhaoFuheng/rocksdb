@@ -27,6 +27,7 @@ for value_size in 50 100 200; do
 
     sudo rm /db_bench/!(lost+found) 
 
+    echo "fillrandom"
     ./db_bench --benchmarks=fillrandom,waitforcompaction,stats \
                 -db=/db_bench \
                 -max_bytes_for_level_multiplier=${T} \
