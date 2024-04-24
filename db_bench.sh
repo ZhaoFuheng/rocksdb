@@ -23,8 +23,7 @@ for T in 2 3 4 5; do
         #             -value_size=${value_size} \
         #             -key_size=${key_size} \
         #             -num=${num} \
-        #             -cache_index_and_filter_blocks=true \
-        #             -pin_l0_filter_and_index_blocks_in_cache=true \
+        #             -cache_size=0 \
         #             --seed=1
 
         # sudo rm /db_bench/!(lost+found) 
@@ -39,8 +38,7 @@ for T in 2 3 4 5; do
                     -value_size=${value_size} \
                     -key_size=${key_size} \
                     -num=${num} \
-                    -cache_index_and_filter_blocks=true \
-                    -pin_l0_filter_and_index_blocks_in_cache=true \
+                    -cache_size=0 \
                     --seed=1
 
         echo "readrandom (to finish compactions if necessary)"
@@ -53,8 +51,7 @@ for T in 2 3 4 5; do
                     -value_size=${value_size} \
                     -key_size=${key_size} \
                     -reads=${reads} \
-                    -cache_index_and_filter_blocks=true \
-                    -pin_l0_filter_and_index_blocks_in_cache=true \
+                    -cache_size=0 \
                     --seed=1
 
         # echo "readrandom"
@@ -67,8 +64,7 @@ for T in 2 3 4 5; do
         #             -value_size=${value_size} \
         #             -key_size=${key_size} \
         #             -reads=${reads} \
-        #             -cache_index_and_filter_blocks=true \
-        #             -pin_l0_filter_and_index_blocks_in_cache=true \
+        #             -cache_size=0 \
         #             --seed=1
 
         # echo "seekrandom"
@@ -81,8 +77,7 @@ for T in 2 3 4 5; do
         #             -value_size=${value_size} \
         #             -key_size=${key_size} \
         #             -reads=${reads} \
-        #             -cache_index_and_filter_blocks=true \
-        #             -pin_l0_filter_and_index_blocks_in_cache=true \
+        #             -cache_size=0 \
         #             --seed=1
 
         echo "seekrandom, seek_nexts=10"
@@ -96,8 +91,7 @@ for T in 2 3 4 5; do
                     -key_size=${key_size} \
                     -reads=${reads} \
                     -seek_nexts=10 \
-                    -cache_index_and_filter_blocks=true \
-                    -pin_l0_filter_and_index_blocks_in_cache=true \
+                    -cache_size=0 \
                     --seed=1
 
         # echo "seekrandom, seek_nexts=100"
@@ -111,8 +105,7 @@ for T in 2 3 4 5; do
         #             -key_size=${key_size} \
         #             -reads=${reads} \
         #             -seek_nexts=100 \
-        #             -cache_index_and_filter_blocks=true \
-        #             -pin_l0_filter_and_index_blocks_in_cache=true \
+        #             -cache_size=0 \
         #             --seed=1
 
         sudo rm /db_bench/!(lost+found) 
