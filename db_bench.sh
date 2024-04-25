@@ -14,19 +14,18 @@ key_size=16
 for T in 2 3 4 5; do
     # echo "value_size=${value_size}"
     echo "T=${T}"
-    echo "fillseq"
-    ./db_bench --benchmarks=fillseq,waitforcompaction,stats \
-                -db=/db_bench \
-                -max_bytes_for_level_multiplier=${T} \
-                -compression_type=none \
-                -value_size=${value_size} \
-                -key_size=${key_size} \
-                -num=${num} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
-                --seed=1
+    # echo "fillseq"
+    # ./db_bench --benchmarks=fillseq,waitforcompaction,stats \
+    #             -db=/db_bench \
+    #             -max_bytes_for_level_multiplier=${T} \
+    #             -compression_type=none \
+    #             -value_size=${value_size} \
+    #             -key_size=${key_size} \
+    #             -num=${num} \
+    #             -cache_size=0 \
+    #             --seed=1
 
-    sudo rm /db_bench/!(lost+found) 
+    # sudo rm /db_bench/!(lost+found) 
 
     echo "fillrandom"
     ./db_bench --benchmarks=fillrandom,waitforcompaction,stats \
@@ -36,8 +35,7 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -num=${num} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
                 --seed=1
 
     echo "readrandom (to finish compactions if necessary)"
@@ -49,35 +47,32 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -reads=${reads} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
                 --seed=1
 
-    echo "readrandom"
-    ./db_bench --benchmarks=readrandom,stats --statistics \
-                -db=/db_bench \
-                -use_existing_db=true \
-                -max_bytes_for_level_multiplier=${T} \
-                -compression_type=none \
-                -value_size=${value_size} \
-                -key_size=${key_size} \
-                -reads=${reads} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
-                --seed=1
+    # echo "readrandom"
+    # ./db_bench --benchmarks=readrandom,stats --statistics \
+    #             -db=/db_bench \
+    #             -use_existing_db=true \
+    #             -max_bytes_for_level_multiplier=${T} \
+    #             -compression_type=none \
+    #             -value_size=${value_size} \
+    #             -key_size=${key_size} \
+    #             -reads=${reads} \
+    #             -cache_size=0 \
+    #             --seed=1
 
-    echo "seekrandom"
-    ./db_bench --benchmarks=seekrandom,stats --statistics \
-                -db=/db_bench \
-                -use_existing_db=true \
-                -max_bytes_for_level_multiplier=${T} \
-                -compression_type=none \
-                -value_size=${value_size} \
-                -key_size=${key_size} \
-                -reads=${reads} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
-                --seed=1
+    # echo "seekrandom"
+    # ./db_bench --benchmarks=seekrandom,stats --statistics \
+    #             -db=/db_bench \
+    #             -use_existing_db=true \
+    #             -max_bytes_for_level_multiplier=${T} \
+    #             -compression_type=none \
+    #             -value_size=${value_size} \
+    #             -key_size=${key_size} \
+    #             -reads=${reads} \
+    #             -cache_size=0 \
+    #             --seed=1
 
     echo "seekrandom, seek_nexts=10"
     ./db_bench --benchmarks=seekrandom,stats --statistics \
@@ -89,23 +84,21 @@ for T in 2 3 4 5; do
                 -key_size=${key_size} \
                 -reads=${reads} \
                 -seek_nexts=10 \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
                 --seed=1
 
-    echo "seekrandom, seek_nexts=100"
-    ./db_bench --benchmarks=seekrandom,stats --statistics \
-                -db=/db_bench \
-                -use_existing_db=true \
-                -max_bytes_for_level_multiplier=${T} \
-                -compression_type=none \
-                -value_size=${value_size} \
-                -key_size=${key_size} \
-                -reads=${reads} \
-                -seek_nexts=100 \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
-                --seed=1
+    # echo "seekrandom, seek_nexts=100"
+    # ./db_bench --benchmarks=seekrandom,stats --statistics \
+    #             -db=/db_bench \
+    #             -use_existing_db=true \
+    #             -max_bytes_for_level_multiplier=${T} \
+    #             -compression_type=none \
+    #             -value_size=${value_size} \
+    #             -key_size=${key_size} \
+    #             -reads=${reads} \
+    #             -seek_nexts=100 \
+    #             -cache_size=0 \
+    #             --seed=1
 
     sudo rm /db_bench/!(lost+found) 
 done
