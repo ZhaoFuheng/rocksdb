@@ -432,6 +432,8 @@ Status GetOptionsFromString(const ConfigOptions& config_options,
 Status StringToMap(const std::string& opts_str,
                    std::unordered_map<std::string, std::string>* opts_map);
 
+void WaitForBackgroundWork(DB* db);
+
 // Request stopping background work, if wait is true wait until it's done
 void CancelAllBackgroundWork(DB* db, bool wait = false);
 

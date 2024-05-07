@@ -3606,6 +3606,14 @@ public class RocksDB extends RocksObject {
         compactionJobInfo == null ? 0 : compactionJobInfo.nativeHandle_));
   }
 
+    /**
+   * This function will wait for all currently scheduled/running background processes
+   */
+
+  public void waitForBackgroundWork() {
+    waitForBackgroundWork(nativeHandle_);
+  }
+
   /**
    * This function will cancel all currently running background processes.
    *
@@ -4616,6 +4624,7 @@ public class RocksDB extends RocksObject {
       final int outputLevel,
       final int outputPathId,
       final long compactionJobInfoHandle) throws RocksDBException;
+  private native void waitForBackgroundWork(final long handle);
   private native void cancelAllBackgroundWork(final long handle,
       final boolean wait);
   private native void pauseBackgroundWork(final long handle)

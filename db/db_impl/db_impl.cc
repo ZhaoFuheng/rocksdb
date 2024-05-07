@@ -493,6 +493,15 @@ Status DBImpl::ResumeImpl(DBRecoverContext context) {
   return s;
 }
 
+void DBImpl::WaitForBackgroundWorkLock() {
+  InstrumentedMutexLock l(&mutex_);
+  // Wait for background work to finish
+  while (bg_bottom_compaction_scheduled_ || bg_compaction_scheduled_ ||
+         bg_flush_scheduled_) {
+    bg_cv_.Wait();
+  }
+}
+
 void DBImpl::WaitForBackgroundWork() {
   // Wait for background work to finish
   while (bg_bottom_compaction_scheduled_ || bg_compaction_scheduled_ ||

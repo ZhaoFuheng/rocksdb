@@ -2911,6 +2911,25 @@ void Java_org_rocksdb_RocksDB_compactRange(JNIEnv* env, jobject,
 
 /*
  * Class:     org_rocksdb_RocksDB
+ * Method:    waitForBackgroundWork
+ * Signature: (J)V
+ */
+
+void Java_org_rocksdb_RocksDB_waitForBackgroundWork(JNIEnv*, jobject,
+                                                    jlong jdb_handle) {
+  auto* db = reinterpret_cast<ROCKSDB_NAMESPACE::DB*>(jdb_handle);
+  ROCKSDB_NAMESPACE::WaitForBackgroundWork(db);
+  /*
+  ROCKSDB_NAMESPACE::WaitForCompactOptions w;
+  auto s = db->WaitForCompact(w);
+  if (!s.ok()) {
+    ROCKSDB_NAMESPACE::RocksDBExceptionJni::ThrowNew(env, s);
+  }
+  */
+}
+
+/*
+ * Class:     org_rocksdb_RocksDB
  * Method:    setOptions
  * Signature: (JJ[Ljava/lang/String;[Ljava/lang/String;)V
  */

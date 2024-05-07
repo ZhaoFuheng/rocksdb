@@ -865,6 +865,8 @@ class DBImpl : public DB {
   // sends the signals.
   void CancelAllBackgroundWork(bool wait);
 
+  void WaitForBackgroundWorkLock();
+
   // Find Super version and reference it. Based on options, it might return
   // the thread local cached one.
   // Call ReturnAndCleanupSuperVersion() when it is no longer needed.
