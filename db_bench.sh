@@ -11,7 +11,7 @@ T=2
 # value_size=100
 key_size=16
 
-for c in 0.4 0.5 0.6 0.7 0.8 0.9 1.0; do
+for c in 0.4 0.8; do
     echo "-----------c=${c}-----------"
     for value_size in 50 100 200; do
         echo "value_size=${value_size}"
