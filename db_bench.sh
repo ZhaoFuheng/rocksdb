@@ -2,18 +2,18 @@
 
 shopt -s extglob
 
-num=17241379 
+num=2000000 
 reads=1000000
 
-# T=2
+T=2
 # c=0.8
 
-value_size=100
+# value_size=100
 key_size=16
 
-for T in 2 3 4 5; do
-    # echo "value_size=${value_size}"
-    echo "T=${T}"
+
+for value_size in 50 100 200; do
+    echo "value_size=${value_size}"
     echo "fillseq"
     ./db_bench --benchmarks=fillseq,waitforcompaction,stats \
                 -db=/db_bench \
@@ -22,8 +22,9 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -num=${num} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     sudo rm /db_bench/!(lost+found) 
@@ -36,8 +37,9 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -num=${num} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     echo "readrandom (to finish compactions if necessary)"
@@ -49,8 +51,9 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -reads=${reads} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     echo "readrandom"
@@ -62,8 +65,9 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -reads=${reads} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     echo "seekrandom"
@@ -75,8 +79,9 @@ for T in 2 3 4 5; do
                 -value_size=${value_size} \
                 -key_size=${key_size} \
                 -reads=${reads} \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     echo "seekrandom, seek_nexts=10"
@@ -89,8 +94,9 @@ for T in 2 3 4 5; do
                 -key_size=${key_size} \
                 -reads=${reads} \
                 -seek_nexts=10 \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     echo "seekrandom, seek_nexts=100"
@@ -103,8 +109,9 @@ for T in 2 3 4 5; do
                 -key_size=${key_size} \
                 -reads=${reads} \
                 -seek_nexts=100 \
-                -cache_index_and_filter_blocks=true \
-                -pin_l0_filter_and_index_blocks_in_cache=true \
+                -cache_size=0 \
+                -use_direct_reads=true \
+                -use_direct_io_for_flush_and_compaction=true \
                 --seed=1
 
     sudo rm /db_bench/!(lost+found) 

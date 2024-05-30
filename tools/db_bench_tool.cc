@@ -4301,6 +4301,7 @@ class Benchmark {
       block_based_options.optimize_filters_for_memory =
           FLAGS_optimize_filters_for_memory;
       block_based_options.index_shortening = index_shortening;
+      cache_ = nullptr;
       if (cache_ == nullptr) {
         block_based_options.no_block_cache = true;
       }
