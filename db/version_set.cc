@@ -4659,43 +4659,28 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
   level_max_bytes_.resize(ioptions.num_levels);
   if (!ioptions.level_compaction_dynamic_level_bytes) {
     base_level_ = (ioptions.compaction_style == kCompactionStyleLevel) ? 1 : -1;
-    for (int i = 1; i < num_levels_; i++) {
-      for (const auto& f : files_[i]) {
-        if (f->fd.GetFileSize() > 0) {
-          num_levels_in_use_ = i;
-          break;
-        }
-      }
-    }
-
-    double autumn_base_scale =
-        std::min(1.0, std::pow(options.autumn_c, num_levels_in_use_ - 1));
 
     // Calculate for static bytes base case
     for (int i = 0; i < ioptions.num_levels; ++i) {
       if (i == 0 && ioptions.compaction_style == kCompactionStyleUniversal) {
-        level_max_bytes_[i] = static_cast<uint64_t>(
-            options.max_bytes_for_level_base / autumn_base_scale);
+        level_max_bytes_[i] = options.max_bytes_for_level_base;
       } else if (i > 1) {
         level_max_bytes_[i] = MultiplyCheckOverflow(
             MultiplyCheckOverflow(
                 level_max_bytes_[i - 1],
-                options.max_bytes_for_level_multiplier / autumn_base_scale),
+                options.max_bytes_for_level_multiplier / options.autumn_c),
             options.MaxBytesMultiplerAdditional(i - 1));
       } else {
-        level_max_bytes_[i] = static_cast<uint64_t>(
-            options.max_bytes_for_level_base / autumn_base_scale);
+        level_max_bytes_[i] = options.max_bytes_for_level_base;
       }
       level_max_bytes_[i] =  MultiplyCheckOverflow(options.write_buffer_size,
                               size_t(level_max_bytes_[i]/options.write_buffer_size) + 1);
-      autumn_base_scale = std::min(1.0, autumn_base_scale / options.autumn_c);
     }
   } else {
     assert(ioptions.compaction_style == kCompactionStyleLevel);
     uint64_t max_level_size = 0;
 
     int first_non_empty_level = -1;
-    int number_of_non_empty_level = 0;
     // Find size of non-L0 level of most data.
     // Cannot use the size of the last level because it can be empty or less
     // than previous levels after compaction.
@@ -4704,10 +4689,6 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
       for (const auto& f : files_[i]) {
         total_size += f->fd.GetFileSize();
       }
-      if (total_size > 0) {
-        number_of_non_empty_level += 1;
-        num_levels_in_use_ = i;
-      }
       if (total_size > 0 && first_non_empty_level == -1) {
         first_non_empty_level = i;
       }
@@ -4715,14 +4696,8 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
         max_level_size = total_size;
       }
     }
-    double autumn_base_scale = std::min(
-        1.0, std::pow(options.autumn_c, number_of_non_empty_level - 2));
 
     // Prefill every level's max bytes to disallow compaction from there.
-    std::vector<uint64_t> level_max_bytes_copy;
-    for (int i = 0; i < num_levels_; i++)
-      level_max_bytes_copy.push_back(level_max_bytes_[i]);
-
     for (int i = 0; i < num_levels_; i++) {
       level_max_bytes_[i] = std::numeric_limits<uint64_t>::max();
     }
@@ -4734,8 +4709,7 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
       base_level_ = num_levels_ - 1;
     } else {
       assert(first_non_empty_level >= 1);
-      uint64_t base_bytes_max = static_cast<uint64_t>(
-          options.max_bytes_for_level_base / autumn_base_scale);
+      uint64_t base_bytes_max = options.max_bytes_for_level_base;
       uint64_t base_bytes_min = static_cast<uint64_t>(
           base_bytes_max / options.max_bytes_for_level_multiplier);
 
@@ -4744,8 +4718,7 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
       for (int i = num_levels_ - 2; i >= first_non_empty_level; i--) {
         // Round up after dividing
         cur_level_size = static_cast<uint64_t>(
-            std::pow(options.autumn_c, num_levels_ - 2 - i) * cur_level_size /
-            options.max_bytes_for_level_multiplier);
+            cur_level_size / options.max_bytes_for_level_multiplier);
         if (lowest_unnecessary_level_ == -1 &&
             cur_level_size <= base_bytes_min &&
             (ioptions.preclude_last_level_data_seconds == 0 ||
@@ -4800,23 +4773,16 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
       level_multiplier_ = options.max_bytes_for_level_multiplier;
       assert(base_level_size > 0);
 
-      double autumn_scale = std::min(
-          1.0,
-          std::pow(options.autumn_c, num_levels_in_use_ - base_level_ - 1));
-
       uint64_t level_size = base_level_size;
       for (int i = base_level_; i < num_levels_; i++) {
         if (i > base_level_) {
-          level_size = MultiplyCheckOverflow(level_size,
-                                             level_multiplier_ / autumn_scale);
-          autumn_scale = std::min(1.0, autumn_scale / options.autumn_c);
+          level_size = MultiplyCheckOverflow(level_size, level_multiplier_);
         }
         // Don't set any level below base_bytes_max. Otherwise, the LSM can
         // assume an hourglass shape where L1+ sizes are smaller than L0. This
         // causes compaction scoring, which depends on level sizes, to favor L1+
         // at the expense of L0, which may fill up and stall.
-        level_max_bytes_[i] = std::max(std::max(level_size, base_bytes_max),
-                                       level_max_bytes_copy[i]);
+        level_max_bytes_[i] = std::max(level_size, base_bytes_max);
       }
     }
   }
