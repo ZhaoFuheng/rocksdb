@@ -299,8 +299,6 @@ struct MutableCFOptions {
   CompactionOptionsFIFO compaction_options_fifo;
   CompactionOptionsUniversal compaction_options_universal;
 
-  double autumn_c;
-
   // Blob file related options
   bool enable_blob_files;
   uint64_t min_blob_size;
@@ -329,6 +327,7 @@ struct MutableCFOptions {
   uint64_t sample_for_compression;
   std::vector<CompressionType> compression_per_level;
   uint32_t memtable_max_range_deletions;
+  double autumn_c;  
   uint32_t bottommost_file_compaction_delay;
 
   // Derived options
